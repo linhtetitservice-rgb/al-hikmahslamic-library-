@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Book": {
+      "title": "Book",
+      "description": "Islamic book or document record stored in digital library",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the book in Myanmar or Arabic" },
+        "author": { "type": "string", "description": "Author or translator name" },
+        "category": { "type": "string", "description": "Category: quran, hadith, fiqh, history, general" },
+        "description": { "type": "string", "description": "Summary or description of the book" },
+        "coverUrl": { "type": "string", "description": "Book cover image URL" },
+        "pdfUrl": { "type": "string", "description": "PDF download or online reader URL" },
+        "pageCount": { "type": "number", "description": "Total number of pages" },
+        "isMemberOnly": { "type": "boolean", "description": "Always false so anyone can read without login" },
+        "uploadedBy": { "type": "string", "description": "Admin UID or creator name" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["title", "author", "category"]
+    },
+    "Fatwa": {
+      "title": "Fatwa",
+      "description": "Islamic religious Q&A record",
+      "type": "object",
+      "properties": {
+        "question": { "type": "string", "description": "The religious question submitted" },
+        "askerName": { "type": "string", "description": "Name or pseudonym of the asker" },
+        "category": { "type": "string", "description": "Category of question" },
+        "status": { "type": "string", "enum": ["answered", "pending"], "description": "Answer status" },
+        "answer": { "type": "string", "description": "Detailed scholarly answer with references" },
+        "answeredBy": { "type": "string", "description": "Scholar or Mufti name" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["question", "status"]
+    },
+    "Annotation": {
+      "title": "Annotation",
+      "description": "User highlights and personal annotations on specific book pages",
+      "type": "object",
+      "properties": {
+        "bookId": { "type": "string", "description": "ID of the book" },
+        "userId": { "type": "string", "description": "Firebase Auth UID of the user" },
+        "pageNumber": { "type": "number", "description": "Page number where highlight was made" },
+        "highlightText": { "type": "string", "description": "Highlighted quote or excerpt" },
+        "noteText": { "type": "string", "description": "Personal commentary or note" },
+        "color": { "type": "string", "enum": ["yellow", "green", "blue", "pink"], "description": "Highlight color" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" },
+        "updatedAt": { "type": "string", "description": "ISO timestamp of last update" }
+      },
+      "required": ["bookId", "userId", "pageNumber", "noteText"]
+    },
+    "DailyInspiration": {
+      "title": "DailyInspiration",
+      "description": "Daily Quran verses and Sahih Hadeeths for daily inspiration",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["hadeeth", "quran"], "description": "Whether verse or hadeeth" },
+        "arabicText": { "type": "string", "description": "Arabic calligraphy and text" },
+        "translationMm": { "type": "string", "description": "Burmese translation" },
+        "reference": { "type": "string", "description": "Book and Hadith/Surah reference" },
+        "narratorOrSurah": { "type": "string", "description": "Narrator Sahabi or Surah designation" },
+        "themeMm": { "type": "string", "description": "Islamic thematic category" },
+        "explanationMm": { "type": "string", "description": "Daily reflection guidance" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["type", "arabicText", "translationMm", "reference", "themeMm"]
+    },
+    "AudioSermon": {
+      "title": "AudioSermon",
+      "description": "Islamic audio sermons, bayans and Quran recitations",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the sermon or recitation" },
+        "speaker": { "type": "string", "description": "Speaker, scholar or reciter name" },
+        "category": { "type": "string", "description": "Category: bayan, quran, hadith, dua, history" },
+        "categoryMm": { "type": "string", "description": "Category in Burmese" },
+        "description": { "type": "string", "description": "Summary or sermon description" },
+        "audioUrl": { "type": "string", "description": "URL or data URL of audio file" },
+        "duration": { "type": "string", "description": "Duration string" },
+        "publishedDate": { "type": "string", "description": "Date or year" },
+        "fileSize": { "type": "string", "description": "Size of file" },
+        "listensCount": { "type": "number", "description": "Total plays/listens" },
+        "uploadedBy": { "type": "string", "description": "Uploader email or name" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["title", "speaker", "audioUrl"]
+    },
+    "AudioBookmark": {
+      "title": "AudioBookmark",
+      "description": "User saved progress timestamp and notes on specific audio sermons to resume playback",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User UID or profile ID" },
+        "sermonId": { "type": "string", "description": "Audio sermon ID" },
+        "sermonTitle": { "type": "string", "description": "Title of sermon" },
+        "speaker": { "type": "string", "description": "Speaker name" },
+        "timestamp": { "type": "number", "description": "Saved playback timestamp in seconds" },
+        "timestampFormatted": { "type": "string", "description": "Formatted timestamp e.g. 14:20" },
+        "note": { "type": "string", "description": "Optional user bookmark note" },
+        "createdAt": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["userId", "sermonId", "timestamp", "timestampFormatted"]
+    }
+  },
+  "firestore": {
+    "/books/{bookId}": {
+      "schema": "Book",
+      "description": "Publicly readable digital library books accessible to everyone without login"
+    },
+    "/fatwas/{fatwaId}": {
+      "schema": "Fatwa",
+      "description": "Publicly readable fatwas and inquiries"
+    },
+    "/annotations/{annotationId}": {
+      "schema": "Annotation",
+      "description": "Private real-time synchronized book highlights and annotations for the logged-in user"
+    },
+    "/hadeeths/{hadeethId}": {
+      "schema": "DailyInspiration",
+      "description": "Publicly accessible Quranic verses and Sahih Hadeeths for daily inspiration"
+    },
+    "/audio_sermons/{sermonId}": {
+      "schema": "AudioSermon",
+      "description": "Publicly listenable Islamic audio sermons; upload and management restricted to Admin"
+    },
+    "/audio_bookmarks/{bookmarkId}": {
+      "schema": "AudioBookmark",
+      "description": "User audio playback progress bookmarks and timestamps"
+    }
+  }
+}

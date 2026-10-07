@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Test connection doc
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // Books collection: Anyone can read freely without login
+    // Admin login required for creating, modifying or deleting books
+    match /books/{bookId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Fatwas collection: Anyone can read answered questions freely without login
+    // Anyone can submit a question, admin manages and answers
+    match /fatwas/{fatwaId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if request.auth != null;
+    }
+
+    // Annotations collection: Authenticated user can read and manage their own highlights
+    match /annotations/{annotationId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Daily Hadeeths & Verses: Anyone can read freely for daily inspiration
+    match /hadeeths/{hadeethId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Audio Sermons & Quran Recitations: Anyone can listen freely, Admin login required to upload/modify
+    match /audio_sermons/{sermonId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Audio Bookmarks: Authenticated users can manage their own audio progress bookmarks
+    match /audio_bookmarks/{bookmarkId} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

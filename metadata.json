@@ -1,0 +1,8 @@
+{
+  "name": "Remix Islamic Knowledge Hub",
+  "description": "A comprehensive Islamic portal featuring PDF book libraries, prayer times, Zakat calculators, and member-exclusive scholarly content.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
